@@ -6,6 +6,9 @@ import getWishlist from "../../actions/getWishlist"
 import Heading from "../../components/Heading"
 import BottomNav from "../../components/navbar/BottomNav"
 
+// Pages read the database, so render them per request instead of at build time.
+export const dynamic = "force-dynamic";
+
 export default async function Wishlist() {
   const currentUser = await getCurrentUser()
   const wishlist = await getWishlist()

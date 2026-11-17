@@ -27,4 +27,7 @@ const page = async ({ params } : { params: IParams}) => {
   )
 }
 
+// Pages read the database, so render them per request instead of at build time.
+export const dynamic = "force-dynamic";
+
 export default page

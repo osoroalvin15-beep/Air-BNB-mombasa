@@ -6,6 +6,9 @@ import Heading from "../../components/Heading";
 import BottomNav from "../../components/navbar/BottomNav";
 import ReservationInfoCard from "../../components/reservations/ReservationInfoCard";
 
+// Pages read the database, so render them per request instead of at build time.
+export const dynamic = "force-dynamic";
+
 export default async function Reservations() {
   const currentUser = await getCurrentUser();
   if (!currentUser) return null;

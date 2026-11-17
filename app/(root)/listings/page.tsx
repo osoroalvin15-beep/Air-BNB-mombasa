@@ -6,6 +6,9 @@ import Heading from "../../components/Heading";
 import BottomNav from "../../components/navbar/BottomNav";
 import getListings from "../../actions/getListings";
 
+// Pages read the database, so render them per request instead of at build time.
+export const dynamic = "force-dynamic";
+
 export default async function Listings() {
   const currentUser = await getCurrentUser();
   const listings = await getListings({ userId: currentUser?.id });

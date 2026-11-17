@@ -4,6 +4,9 @@ import ClientOnly from "../components/ClientOnly";
 import ListingCard from "../components/listing/ListingCard";
 import PriceSwitch from "../components/inputs/PriceSwitch";
 
+// Pages read the database, so render them per request instead of at build time.
+export const dynamic = "force-dynamic";
+
 export default async function Home({ searchParams }: any) {
   const listings = await getListings(searchParams);
   const currentUser = await getCurrentUser();
