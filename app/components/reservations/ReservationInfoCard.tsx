@@ -99,7 +99,7 @@ const ReservationInfoCard: React.FC<ReservationInfoCardProps> = ({
           </div>
         </div>
         <div className="mt-3 font-semibold text-base text-black">
-          ₹{reservation.totalPrice}
+          KSh {reservation.totalPrice.toLocaleString("en-KE")}
         </div>
       </div>
     </div>

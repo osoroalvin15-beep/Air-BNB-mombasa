@@ -24,7 +24,7 @@ const Input: React.FC<InputProps> = ({
   return (
     <div className="relative flex items-center">
       {price && (
-        <span className="absolute left-3 font-semibold text-xl">₹</span>
+        <span className="absolute left-3 font-semibold text-base">KSh</span>
       )}
       <input
         type={type}
@@ -33,7 +33,7 @@ const Input: React.FC<InputProps> = ({
         onChange={handleChange}
         placeholder={placeholder}
         className={`${
-          price ? "px-8 font-semibold text-xl" : "px-3"
+          price ? "pl-14 pr-3 font-semibold text-xl" : "px-3"
         } py-4 rounded-md border border-light-gray w-full`}
       />
     </div>

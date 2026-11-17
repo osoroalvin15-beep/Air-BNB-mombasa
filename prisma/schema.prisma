@@ -70,3 +70,23 @@ model Reservation {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
 }
+
+// One row per M-Pesa payment attempt. A Reservation is only created once
+// Safaricom confirms the payment (see app/libs/payments.ts).
+model MpesaPayment {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String   @db.ObjectId
+  listingId         String   @db.ObjectId
+  startDate         DateTime
+  endDate           DateTime
+  amount            Int
+  phone             String
+  checkoutRequestId String?
+  merchantRequestId String?
+  // PENDING | SUCCESS | FAILED | REVIEW
+  status            String   @default("PENDING")
+  receipt           String?
+  resultDesc        String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}

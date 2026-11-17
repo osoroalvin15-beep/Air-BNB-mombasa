@@ -6,7 +6,7 @@ import React from "react";
 
 const ReservationSuccessPage = () => {
   const searchParams = useSearchParams();
-  const sessionId = searchParams?.get("session_id");
+  const receipt = searchParams?.get("receipt");
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-green-50 p-6">
@@ -14,9 +14,9 @@ const ReservationSuccessPage = () => {
         Payment Successful!
       </h1>
       <p className="mb-2">Thank you for your reservation.</p>
-      {sessionId && (
+      {receipt && (
         <p className="text-sm text-gray-600">
-          Session ID: <code>{sessionId}</code>
+          M-Pesa receipt: <code>{receipt}</code>
         </p>
       )}
 

@@ -1,7 +1,5 @@
 "use client";
 
-import axios from "axios";
-import { toast } from "react-hot-toast";
 import { differenceInCalendarDays, eachDayOfInterval } from "date-fns";
 import { SafeListing, SafeResevations, SafeUser } from "@/app/types";
 import ClientOnly from "@/app/components/ClientOnly";
@@ -11,8 +9,7 @@ import useGetCountries from "@/app/hooks/useGetCountries";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { categories } from "@/app/components/navbar/categories/CategoriesContainer";
-import getReservation from "@/app/actions/getReservations";
-import { loadStripe } from "@stripe/stripe-js";
+import MpesaModal from "@/app/components/modals/MpesaModal";
 
 const initialRange = {
   startDate: new Date(),
@@ -41,7 +38,6 @@ const ListingClient: FC<ListingClientProps> = ({
   }, [listing.category]);
 
   const [localReservations, setLocalReservations] = useState(reservations);
-  const [loading, setLoading] = useState(false);
 
   const disabledDates = useMemo(() => {
     let dates: Date[] = [];
@@ -58,39 +54,12 @@ const ListingClient: FC<ListingClientProps> = ({
   const [totalPrice, setTotalPrice] = useState(listing.price);
   const [dateRange, setDateRange] = useState(initialRange);
 
-  const stripePromise = loadStripe(
-    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-  );
+  const [payOpen, setPayOpen] = useState(false);
 
-  const onReservation = useCallback(async () => {
+  const onReservation = useCallback(() => {
     if (!currentUser) return loginModal.onOpen();
-
-    setLoading(true);
-
-    try {
-      const response = await axios.post("/api/create-stripe-session", {
-        listingId: listing.id,
-        startDate: dateRange.startDate,
-        endDate: dateRange.endDate,
-        price: totalPrice,
-        userId: currentUser.id,
-      });
-
-      const { sessionId } = response.data;
-
-      const stripe = await stripePromise;
-      if (!stripe) throw new Error("Stripe failed to load");
-
-      const { error } = await stripe.redirectToCheckout({ sessionId });
-      if (error) {
-        toast.error(error.message || "Failed to initiate payment");
-        setLoading(false);
-      }
-    } catch (error) {
-      toast.error("Failed to initiate payment");
-      setLoading(false);
-    }
-  }, [totalPrice, dateRange, listing.id, currentUser, loginModal]);
+    setPayOpen(true);
+  }, [currentUser, loginModal]);
 
   useEffect(() => {
     if (dateRange.startDate && dateRange.endDate) {
@@ -120,9 +89,16 @@ const ListingClient: FC<ListingClientProps> = ({
           listing={listing}
           category={category}
           disabledDates={disabledDates}
-          loading={loading}
         />
       </div>
+      <MpesaModal
+        isOpen={payOpen}
+        close={() => setPayOpen(false)}
+        listingId={listing.id}
+        startDate={dateRange.startDate}
+        endDate={dateRange.endDate}
+        totalPrice={totalPrice}
+      />
     </ClientOnly>
   );
 };
